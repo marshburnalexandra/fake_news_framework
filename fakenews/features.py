@@ -21,3 +21,7 @@ class FeatureExtractor:
                 "trasnform() called before fit_transform(). Train the vectorizer first."
             )
         return self.vectorizer.transform(texts)
+
+if __name__ == "__main__":
+    fe = FeatureExtractor()
+    print("FeatureExtractor loaded successfully.")
