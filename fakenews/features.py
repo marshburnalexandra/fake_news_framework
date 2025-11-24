@@ -12,9 +12,9 @@ class FeatureExtractor:
         self.vectorizer = TfidfVectorizer(max_features=max_features)
         self.preprocessor = preprocessor or Preprocessor()
 
-    def fit_transformation(self, texts: List[str]):
+    def fit_transform(self, texts: List[str]):
         if not isinstance(texts, list):
-            raise TypeError("fit_transformation expects a list of strings.")
+            raise TypeError("fit_transform expects a list of strings.")
         if len(texts) < 5:
             warnings.warn("Small dataset: TF-IDF may perform poorly.")
         cleaned = [self.preprocessor.clean(t) for t in texts]

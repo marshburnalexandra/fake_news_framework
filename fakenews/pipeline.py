@@ -5,33 +5,26 @@ from .models import LogisticNewsModel
 
 
 class FakeNewsPipeline:
-    """Simple pipeline using Preprocessor, TF-IDF, and a classifier."""
+    def __init__(self, model=None, feature_max_features=3000, remove_stopwords=True, stem=True):
+        self.preprocessor = Preprocessor(remove_stopwords=remove_stopwords, stem=stem)
+        self.feature_extractor = FeatureExtractor(max_features=feature_max_features, preprocessor=self.preprocessor)
+        self.model = model or LogisticNewsModel()  # default model
 
-    def __init__(self, max_features: int = 5000):
-        self.preprocessor = Preprocessor()
-        self.extractor = FeatureExtractor(max_features=max_features, preprocessor=self.preprocessor)
-        self.model = LogisticNewsModel()
-        self.is_fitted = False
-
-    def fit(self, texts: Iterable[str], labels: Iterable[str]):
+    def fit(self, texts, labels):
+        # Preprocess texts
         cleaned = [self.preprocessor.clean(t) for t in texts]
-        X = self.extractor.fit_transformation(cleaned)
+        X = self.feature_extractor.fit_transform(cleaned)
         self.model.train(X, labels)
-        self.is_fitted = True
-        return self
 
-    def evaluate(self, texts: Iterable[str], labels: Iterable[str]):
-        if not self.is_fitted:
-            raise RuntimeError("Pipeline not fitted. Call fit() first.")
-        cleaned = [self.preprocessor.clean(t) for t in texts]
-        X = self.extractor.transform(cleaned)
-        return self.model.evaluate(X, labels)
-
-    def predict(self, text: str):
-        if not self.is_fitted:
-            raise RuntimeError("Pipeline not fitted. Call fit() first.")
-        X = self.extractor.transform([self.preprocessor.clean(text)])
-        return self.model.predict_single(X)
+    def predict(self, text):
+        x = self.feature_extractor.transform([self.preprocessor.clean(text)])
+        return self.model.predict_single(x)
+    
+    def evaluate(self, texts, labels):
+        cleaned = [self.preprocessor(t) for t in texts]
+        X = self.feature_extractor.transform(cleaned)
+        accuracy = self.model.evaluate(X, labels)["accuracy"]
+        return {"accuracy": accuracy}
 
     def __repr__(self):
-        return f"FakeNewsPipeline(model={self.model}, extractor={self.extractor})"
+        return f"FakeNewsPipeline(model={repr(self.model)}, extractor={repr(self.feature_extractor)})"

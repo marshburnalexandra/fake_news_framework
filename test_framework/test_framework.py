@@ -36,7 +36,7 @@ print("Preprocessor repr:", repr(preprocessor))
 print("\n--- FeatureExtractor Test ---")
 feature_extractor = FeatureExtractor(max_features=3000, preprocessor=preprocessor)
 cleaned_texts = [preprocessor(t) for t in df["text"].tolist()]
-X = feature_extractor.fit_transformation(cleaned_texts)
+X = feature_extractor.fit_transform(cleaned_texts)
 print("Feature matrix shape:", X.shape)
 print("FeatureExtractor repr:", repr(feature_extractor))
 
@@ -64,7 +64,8 @@ for model in models:
 # 5. FakeNewsPipeline (Composition)
 # -----------------------------
 print("\n--- FakeNewsPipeline Test ---")
-pipeline = FakeNewsPipeline(max_features=3000)
+pipeline = FakeNewsPipeline(model=LogisticNewsModel(), feature_max_features=3000)
+
 pipeline.fit(df["text"].tolist(), df["label"].tolist())
 pipeline_results = pipeline.evaluate(df["text"].tolist(), df["label"].tolist())
 print("Pipeline Accuracy:", pipeline_results["accuracy"])
