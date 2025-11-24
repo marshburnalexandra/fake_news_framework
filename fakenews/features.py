@@ -1,27 +1,30 @@
 from typing import List
 from sklearn.feature_extraction.text import TfidfVectorizer
 import warnings
+from .preprocessing import Preprocessor
+
 
 class FeatureExtractor:
-    def __init__(self, max_features=5000):
+    """TF-IDF feature extraction with optional preprocessing."""
+
+    def __init__(self, max_features=5000, preprocessor: Preprocessor = None):
+        self.max_features = max_features
         self.vectorizer = TfidfVectorizer(max_features=max_features)
+        self.preprocessor = preprocessor or Preprocessor()
 
     def fit_transformation(self, texts: List[str]):
         if not isinstance(texts, list):
-            raise TypeError("fit_transform() expects a list of strings.")
-        
+            raise TypeError("fit_transformation expects a list of strings.")
         if len(texts) < 5:
-            warnings.warn("Dataset is too small. TF-IDF may perform poorly.")
+            warnings.warn("Small dataset: TF-IDF may perform poorly.")
+        cleaned = [self.preprocessor.clean(t) for t in texts]
+        return self.vectorizer.fit_transform(cleaned)
 
-        return self.vectorizer.fit_transform(texts)
-    
     def transform(self, texts: List[str]):
         if not hasattr(self.vectorizer, "vocabulary_"):
-            raise RuntimeError(
-                "trasnform() called before fit_transform(). Train the vectorizer first."
-            )
-        return self.vectorizer.transform(texts)
+            raise RuntimeError("Vectorizer not fitted. Call fit_transformation first.")
+        cleaned = [self.preprocessor.clean(t) for t in texts]
+        return self.vectorizer.transform(cleaned)
 
-if __name__ == "__main__":
-    fe = FeatureExtractor()
-    print("FeatureExtractor loaded successfully.")
+    def __repr__(self):
+        return f"FeatureExtractor(max_features={self.max_features})"

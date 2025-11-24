@@ -1,40 +1,80 @@
 import os
 from fakenews.utils import load_dataset, preview
-from fakenews.preprocessing import preprocess_pipeline
+from fakenews.pipeline import FakeNewsPipeline
+from fakenews.preprocessing import Preprocessor
 from fakenews.features import FeatureExtractor
-from fakenews.models import FakeNewsModel
+from fakenews.models import LogisticNewsModel, NaiveBayesNewsModel, SVMNewsModel
 
+# -----------------------------
+# 1. Load dataset
+# -----------------------------
 csv_path = os.path.join(os.path.dirname(__file__), "..", "News", "news.csv")
-print("Trying to load CSV from:", csv_path)
+print("Loading CSV from:", csv_path)
 
 df = load_dataset(csv_path)
 df = df.dropna(subset=["text", "label"])
 df = df[df["label"].astype(str).str.strip() != ""]
 df = df.reset_index(drop=True)
-print("Dataset preview:")
-print(preview(df))
 
-df["cleaned"] = df["text"].apply(preprocess_pipeline)
+print("\nDataset preview:")
+print(preview(df, 5))
 
-print(type(df["cleaned"]))       
-print(type(df["cleaned"].tolist())) 
+# -----------------------------
+# 2. Demonstrate Preprocessor
+# -----------------------------
+print("\n--- Preprocessor Test ---")
+preprocessor = Preprocessor(remove_stopwords=True, stem=True)
+sample_text = "Breaking News: Scientists discover cure for COVID-19! Visit https://example.com"
+cleaned_text = preprocessor(sample_text)  # Using __call__ dunder
+print("Original:", sample_text)
+print("Cleaned:", cleaned_text)
+print("Preprocessor repr:", repr(preprocessor))
 
-fe = FeatureExtractor()
-X = fe.fit_transformation(df["cleaned"].tolist()) 
-y = df["label"]
+# -----------------------------
+# 3. Feature extraction
+# -----------------------------
+print("\n--- FeatureExtractor Test ---")
+feature_extractor = FeatureExtractor(max_features=3000, preprocessor=preprocessor)
+cleaned_texts = [preprocessor(t) for t in df["text"].tolist()]
+X = feature_extractor.fit_transformation(cleaned_texts)
+print("Feature matrix shape:", X.shape)
+print("FeatureExtractor repr:", repr(feature_extractor))
 
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# -----------------------------
+# 4. Model tests (Inheritance + Polymorphism)
+# -----------------------------
+print("\n--- Model Tests ---")
+y = df["label"].tolist()
 
-model = FakeNewsModel()
-model.train(X_train, y_train)
+# Using different models
+models = [
+    LogisticNewsModel(),
+    NaiveBayesNewsModel(),
+    SVMNewsModel()
+]
 
-results = model.evaluate(X_test, y_test)
-print("\nModel Accuracy:", results["accuracy"])
-print(results["report"])
+for model in models:
+    print(f"\nTraining {repr(model)}")
+    model.train(X, y)
+    results = model.evaluate(X, y)
+    print("Accuracy:", results["accuracy"])
+    # print(results["report"])  # Optional: full classification report
 
-new_article = "Breaking news: Scientists discover cure for XYZ."
-processed = preprocess_pipeline(new_article)
-vector = fe.transform([processed])
-prediction = model.predict_single(vector)
-print("Prediction for new article:", prediction)
+# -----------------------------
+# 5. FakeNewsPipeline (Composition)
+# -----------------------------
+print("\n--- FakeNewsPipeline Test ---")
+pipeline = FakeNewsPipeline(max_features=3000)
+pipeline.fit(df["text"].tolist(), df["label"].tolist())
+pipeline_results = pipeline.evaluate(df["text"].tolist(), df["label"].tolist())
+print("Pipeline Accuracy:", pipeline_results["accuracy"])
+print("Pipeline repr:", repr(pipeline))
+
+# -----------------------------
+# 6. Predict single article
+# -----------------------------
+print("\n--- Single Prediction ---")
+example_article = "Breaking news: Scientists announce a new study showing X cures Y."
+prediction = pipeline.predict(example_article)
+print("Article:", example_article)
+print("Predicted label:", prediction)
