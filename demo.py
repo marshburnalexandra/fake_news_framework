@@ -1,3 +1,25 @@
+"""
+Fake News Detection Script
+--------------------------
+
+This script demonstrates a full workflow for fake news classification using the
+fakenews library. It loads a dataset, preprocesses text, extracts features,
+trains multiple machine learning models, evaluates them, and tests a complete
+pipeline.
+
+Workflow:
+    1. Load dataset from CSV
+    2. Preview data
+    3. Initialize and test the Preprocessor
+    4. Extract TF-IDF features
+    5. Train Logistic Regression, Naive Bayes, and SVM models
+    6. Evaluate models
+    7. Initialize and train the unified FakeNewsPipeline
+    8. Make a sample prediction
+
+Run:
+    python script.py
+"""
 import os
 from fakenews.utils import load_dataset, preview
 from fakenews.preprocessing import Preprocessor
@@ -6,6 +28,9 @@ from fakenews.models import LogisticNewsModel, NaiveBayesNewsModel, SVMNewsModel
 from fakenews.pipeline import FakeNewsPipeline
 
 def main():
+    """
+    Execute the fake news detection workflow.
+    """
     # ------------------------
     # Load dataset
     # ------------------------
