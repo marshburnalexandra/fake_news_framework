@@ -1,3 +1,19 @@
+"""
+Fake News Detection Script
+
+This script loads a news dataset, cleans the text, extracts TF-IDF features,
+trains multiple machine-learning models, evaluates them, and tests a complete
+FakeNewsPipeline. It demonstrates preprocessing, feature extraction, model
+training, and making a single prediction.
+
+Steps:
+1. Load and clean dataset
+2. Test Preprocessor
+3. Extract features with FeatureExtractor
+4. Train Logistic Regression, Naive Bayes, and SVM models
+5. Train and evaluate FakeNewsPipeline
+6. Predict label for an example article
+"""
 import os
 from fakenews.utils import load_dataset, preview
 from fakenews.pipeline import FakeNewsPipeline
