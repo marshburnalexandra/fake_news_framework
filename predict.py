@@ -7,11 +7,28 @@ MODEL_PATH = "saved_model.pkl"
 
 
 def save_pipeline(pipeline):
+    """
+    Save a trained FakeNewsPipeline object to disk.
+
+    Args:
+        pipeline (FakeNewsPipeline): The trained pipeline to save.
+
+    Saves:
+        saved_model.pkl: Serialized model file created with joblib.
+    """
     joblib.dump(pipeline, MODEL_PATH)
     print(f"Pipeline saved to {MODEL_PATH}")
 
 
 def load_pipeline():
+    """
+    Load a previously saved FakeNewsPipeline model from disk.
+
+    Returns:
+        FakeNewsPipeline or None:
+            - Loaded model if the file exists.
+            - None if no saved model is found.
+    """
     if not os.path.exists(MODEL_PATH):
         print("No saved model found! Training a new one...")
         return None
@@ -21,6 +38,12 @@ def load_pipeline():
 
 
 def train_and_save():
+    """
+    Train a new FakeNewsPipeline model on the dataset and save it.
+
+    Returns:
+        FakeNewsPipeline: The trained model.
+    """
     print("Training model and saving...")
 
     df = pd.read_csv("News/news.csv").dropna(subset=["text", "label"])
@@ -39,6 +62,9 @@ def train_and_save():
 
 
 def main():
+    """
+    Load or train the model, then predict user-provided news text.
+    """
     pipeline = load_pipeline()
 
     if pipeline is None:
