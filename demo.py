@@ -30,6 +30,20 @@ from fakenews.pipeline import FakeNewsPipeline
 def main():
     """
     Execute the fake news detection workflow.
+
+    This function orchestrates all components of the pipeline:
+        - Loads the dataset
+        - Previews sample data
+        - Preprocesses text using the Preprocessor class
+        - Extracts TF-IDF features using FeatureExtractor
+        - Trains and evaluates three machine learning models:
+            * Logistic Regression
+            * Naive Bayes
+            * Support Vector Machine (SVM)
+        - Trains a unified FakeNewsPipeline model
+        - Makes a prediction on an example text input
+
+    Prints progress updates and model evaluation metrics to the console.
     """
     # ------------------------
     # Load dataset
