@@ -1,6 +1,6 @@
 [project]
 name = "fakenews-framework"
-version = "0.1.0"
+version = "0.1.1"
 description = "A simple machine-learning framework for detecting fake news using preprocessing, feature extraction, and multiple ML models."
 readme = "README.md"
 authors = [

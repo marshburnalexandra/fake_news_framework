@@ -60,6 +60,9 @@ All exported names are listed in ``__all__`` for clean imports when using:
 This design ensures that external users have access only to the primary
 public-facing classes and functions.
 """
+__version__ = "0.1.1"
+print("fakenews __init__.py loaded")
+
 from .preprocessing import Preprocessor
 from .features import FeatureExtractor
 from .models import LogisticNewsModel, NaiveBayesNewsModel, SVMNewsModel
