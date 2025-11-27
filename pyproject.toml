@@ -8,15 +8,12 @@ authors = [
 ]
 license = { text = "MIT" }
 requires-python = ">=3.9"
-
 dependencies = [
   "scikit-learn",
   "pandas",
   "numpy",
   "joblib",
 ]
-
-packages = ["fakenews"]
 
 [project.urls]
 Homepage = "https://github.com/marshburnalexandra/fake_news_framework"
@@ -26,3 +23,6 @@ Issues = "https://github.com/marshburnalexandra/fake_news_framework/issues"
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["fakenews"]
