@@ -21,6 +21,8 @@ Developed by **BaByLabs**.
 ```bash
 pip install fakenews-framework
 
+```
+
 ---
 
 ## Credit to these for our OOP-Final Project:
