@@ -1,6 +1,21 @@
 from fakenews import Preprocessor, FeatureExtractor, FakeNewsPipeline, load_dataset, preview
 
 def main():
+    """
+    Run a demonstration of the FakeNews detection workflow.
+
+    This includes:
+    - Loading and previewing the dataset
+    - Preprocessing a sample text
+    - Extracting features from processed text
+    - Training the FakeNewsPipeline on the dataset
+    - Predicting the label of a sample news sentence
+    - Displaying a preview of the dataset
+
+    This function provides a simple example of how preprocessing,
+    feature extraction, model training, and prediction work together
+    within the FakeNews pipeline.
+    """
     print("=== Loading dataset ===")
     df = load_dataset("News/news.csv")
     print(df.head())
