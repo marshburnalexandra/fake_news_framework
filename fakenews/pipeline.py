@@ -1,6 +1,5 @@
 from .preprocessing import Preprocessor
 from .features import FeatureExtractor
-from .models import LogisticNewsModel
 
 class FakeNewsPipeline:
 
@@ -17,25 +16,32 @@ class FakeNewsPipeline:
             preprocessor=self.preprocessor
         )
 
-        self.model = model or LogisticNewsModel()
+        self.model = model
+
+        self.is_fitted = False
 
     def fit(self, texts, labels):
-        cleaned = [self.preprocessor.clean(t) for t in texts]
-        X = self.feature_extractor.fit_transform(cleaned)
+        cleaned_texts = [self.preprocessor.clean(t) for t in texts]
+        X = self.feature_extractor.fit_transform(cleaned_texts)
         self.model.train(X, labels)
+        self.is_fitted = True
 
     def predict(self, texts):
+        if not self.is_fitted:
+            raise RuntimeError("Pipeline not fitted. Call fit() first.")
+        
         if isinstance(texts, str):
             texts = [texts]
 
-        cleaned = [self.preprocessor.clean(t) for t in texts]
-        X = self.feature_extractor.transform(cleaned)
-        return self.model.predict(X)
+        cleaned_texts = [self.preprocessor.clean(t) for t in texts]
+        X = self.feature_extractor.transform(cleaned_texts)
+        
+        return [self.model.predict_single(X[i]) for i in range(X.shape[0])]
 
     def evaluate(self, texts, labels):
         preds = self.predict(texts)
         accuracy = sum(p == l for p, l in zip(preds, labels)) / len(labels)
-        return {"accuracy": accuracy}
+        return {"accuracy": accuracy, "predictions": preds}
 
     def __repr__(self):
-        return f"FakeNewsPipeline(model={self.model})"
+        return f"FakeNewsPipeline(model={self.model}, preprocessor={self.preprocessor})"

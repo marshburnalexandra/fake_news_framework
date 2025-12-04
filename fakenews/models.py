@@ -63,6 +63,19 @@ class BaseNewsModel(ABC):
             A dictionary containing accuracy and a classification report.
         """
         pass
+    
+    def predict(self, X):
+        """
+        Predict labels for multiple feature vectors.
+
+        Parameters
+        ----------
+        X : sparse matrix or ndarray
+            Feature matrix for multiple samples.
+        Uses the subclass's predict_single() on each row.
+        Compatible with sparse matrices.
+        """
+        return [self.predict_single(X[i]) for i in range(X.shape[0])]
 
 
 class LogisticNewsModel(BaseNewsModel):

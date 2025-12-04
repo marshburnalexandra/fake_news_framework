@@ -10,7 +10,7 @@ def load_dataset(path):
     ext = os.path.splitext(path)[1].lower()
 
     if ext == ".csv":
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, encoding="utf-8")
     elif ext == ".json":
         df = pd.read_json(path)
     elif ext == ".txt":
