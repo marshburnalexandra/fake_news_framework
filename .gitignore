@@ -1,0 +1,11 @@
+# Ignore build artifacts
+dist/
+build/
+*.egg-info/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore model output
+saved_model.pkl
