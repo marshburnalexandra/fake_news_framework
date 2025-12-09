@@ -35,4 +35,9 @@ Fake News Classification
 By: Ahmed Hafez
 Source: https://www.kaggle.com/code/ahmedtronic/fake-news-classification 
 
+Special Thanks to the creators of:
+
+- scikit-learn (Machine Learning)
+- NLTK / spaCy (Natural Language Processing inspiration)
+- Public datasets used during development (Kaggle, news sources, etc.)
 ---
