@@ -3,7 +3,42 @@ import json
 import os
 
 def load_dataset(path):
+    """
+    Load a text-classification dataset from a CSV, JSON, or TXT file.
 
+    The function attempts to automatically identify the text and label columns
+    based on common naming conventions. It supports:
+      - CSV files (.csv)
+      - JSON files (.json)
+      - Tab-separated text files (.txt) with two columns: text and label
+
+    Parameters
+    ----------
+    path : str
+        File path to the dataset.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A dataframe containing two columns:
+        - "text": the input text
+        - "label": the associated label
+
+    Raises
+    ------
+    FileNotFoundError
+        If the file does not exist at the given path.
+    ValueError
+        If the file format is unsupported or if required columns
+        (text and label) cannot be found.
+
+    Notes
+    -----
+    Recognized text column names:
+        ["text", "article", "content", "body"]
+    Recognized label column names:
+        ["label", "category", "target", "class"]
+    """
     if not os.path.exists(path):
         raise FileNotFoundError(f"Dataset not found: {path}")
 
@@ -37,4 +72,19 @@ def load_dataset(path):
 
 
 def preview(df, rows=5):
+    """
+    Return the first few rows of a DataFrame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to preview.
+    rows : int, optional (default=5)
+        Number of rows to return.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The top `rows` entries of the DataFrame.
+    """
     return df.head(rows)
